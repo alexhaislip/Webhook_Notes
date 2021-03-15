@@ -1,0 +1,40 @@
+What’s a Webhook?
+
+June 24, 2014 • 4 min read
+A webhook is an API concept that’s growing in popularity. As more and more of what we do on the web can be described by events, webhooks are becoming even more applicable. They’re incredibly useful and a resource-light way to implement event reactions.
+
+So, what exactly is a webhook? A webhook (also called a web callback or HTTP push API) is a way for an app to provide other applications with real-time information. A webhook delivers data to other applications as it happens, meaning you get data immediately. Unlike typical APIs where you would need to poll for data very frequently in order to get it real-time. This makes webhooks much more efficient for both provider and consumer. The only drawback to webhooks is the difficulty of initially setting them up.
+
+Webhooks are sometimes referred to as “Reverse APIs,” as they give you what amounts to an API spec, and you must design an API for the webhook to use. The webhook will make an HTTP request to your app (typically a POST), and you will then be charged with interpreting it.
+
+Consuming a Webhook
+The first step in consuming a webhook is giving the webhook provider a URL to deliver requests to. This is most often done through a backend panel or an API. This means that you also need to set up a URL in your app that’s accessible from the public web.
+
+The majority of webhooks will POST data to you in one of two ways: as JSON (typically) or XML (blech) to be interpreted, or as a form data (application/x-www-form-urlencoded or multipart/form-data). Your provider will tell you how they deliver it (or even give you a choice in the matter). Both of these are fairly easy to interpret, and most web frameworks will do the work for you. If they don’t, you may need to call on a function or two.
+
+Debugging a Webhook
+Debugging a webhook can be complex at times, as webhooks are principally asynchronous. Thus, you must trigger them and wait, then check the response. This can be tiresome and is fairly inefficient. Luckily there are better ways! We go through many of them in our documentation page on Debugging Webhooks, however, it amounts to the following:
+
+Understand what the webhook provides, by using a tool like RequestBin to collect the webhook’s requests.
+Mock the requests using a tool like cURL or Postman.
+Test the code on your machine by using a tool like ngrok.
+Watch the whole flow using a tool like Runscope.
+Securing a Webhook
+As webhooks deliver data to publicly available URLs in your app, there’s the chance that someone else could find that URL and then provide you with false data. To prevent this from happening, you can employ a number of techniques. The easiest thing to do (and what you should implement before going any further) is to force TLS connections (https). Once you’ve implemented that, you may go forward and further secure your connection:
+
+The first, and most supported, way to secure a webhook is to add tokens to the URL that act as unique identification e.g.?auth=TK
+The next option is to implement Basic Auth, this is also widely supported, and very easy to do.
+The first two solutions work great to prevent most attacks, however they have the disadvantage of sending the auth token with the request. The third option is to have the provider sign each request it makes to you and then verifying the signature. This has the disadvantage of requiring the provider to have implemented request signing—meaning if they don’t already, you’re probably out of luck.
+Important Gotchas
+There are a couple things to keep in mind when creating webhook consumers:
+
+Webhooks deliver data to your application and may stop paying attention after making a request. This means if your application has an error your data may be lost. Many webhooks will pay attention to responses and re-send requests if your application errors out. If your application processed the request and still sent an error, there may be duplicate data in your app. Understand how your webhook provider deals with responses so you can prepare for the possibility of application errors. Additionally, you may want to check out our tool Reflector.io for help dealing with webhook errors and queuing.
+Webhooks can make a lot of requests. If your provider has a lot of events to tell you about, they may end up DDoSing your app. Make sure your application can handle the expected scale of your webhook. We made another tool, Loader.io, to help with that.
+Get Your Feet Wet
+The best way to truly understand a webhook is to try one. Luckily, lots of services use webhooks so you can easily play with them to your heart’s content. Check out some of the webhooks below:
+
+SendGrid – We deliver event data and even parse emails through our webhooks.
+Twilio – Twilio both delivers and reacts to phone calls and text messages using webhooks.
+Github – Github updates applications about repositories and actions taken upon them through webhooks.
+Foursquare – Foursquare notifies applications when users checkin using their webhook.
+For more information on SendGrid’s API, check out our docs pages. Have fun and happy webhooking
